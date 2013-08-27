@@ -1,5 +1,3 @@
-Set-Alias subl "C:\Program Files\Sublime Text 3\sublime_text.exe"
-
 function .. {cd ..}
 function console {set-location "c:$($env:HOMEPATH)\Application Data\Console"}
 function psc {set-location "c:$($env:HOMEPATH)\Documents\WindowsPowershell"}

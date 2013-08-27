@@ -2,6 +2,7 @@ Import-Module PsGet
 Import-Module PSUrl
 Import-Module Aliases
 
+Set-Alias subl "C:\Program Files\Sublime Text 3\sublime_text.exe"
 
 function CDScripts {set-location C:\Users\chbentiv\Documents\Scripts}
 Set-Alias s CDScripts
