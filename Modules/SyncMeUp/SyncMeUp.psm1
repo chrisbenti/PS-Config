@@ -17,7 +17,6 @@ function sync{
             git pull
         } else {
             Write-Host "Syncing $($_[0])" -f Red
-            git add -u
             git add .
             git commit -m (Read-Host -Prompt "Commit Message")
             git pull
