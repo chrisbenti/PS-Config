@@ -13,10 +13,10 @@ function sync{
         Set-Location $_[1]
         $status = (gst)[-1]
         if($status.Contains("working directory clean")){
-            Write-Host "No local $($_[0])" -f Green 
+            Write-Host "No changes to: $($_[0])" -f Green 
             git pull
         } else {
-            Write-Host "Syncing $($_[0])" -f Red
+            Write-Host "Syncing: $($_[0])" -f Red
             git add -u
             git add .
             Write-Host "Diff Message: " -f Blue
