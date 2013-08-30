@@ -41,7 +41,7 @@ function sync{
             git push
         }
 
-        if ($pull[0].Contains("Updating")){
+        if (!$pull[0].GetType().Equals([System.Char]) -and $pull[0].Contains("Updating")){
             $Reload = $True
         }
     }
@@ -49,5 +49,5 @@ function sync{
     Set-Location $Start
 
     Write-Host "All Synced!" -f Green
-    reload
+    if ($Reload) {reload}
 }
