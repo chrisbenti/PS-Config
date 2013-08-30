@@ -3,6 +3,10 @@ Import-Module PSUrl
 Import-Module Aliases
 Import-Module SyncMeUp
 
+(Get-Content ~\.last) | set-location
+rm ~\.last
+
+
 # Makes git diff work
 $env:TERM = "msys"
 

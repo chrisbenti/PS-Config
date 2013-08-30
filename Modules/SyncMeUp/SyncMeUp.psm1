@@ -1,4 +1,5 @@
 function reload{
+    (Get-Location).Path > ~\.last
     $process = get-process | ?{$_.ID -eq $pid}
     if($process.MainWindowTitle.Equals("")){
         # Console
