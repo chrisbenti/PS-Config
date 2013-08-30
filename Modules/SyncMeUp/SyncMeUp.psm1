@@ -36,7 +36,7 @@ function sync{
     Set-Location $Start
 
     Write-Host "All Synced!" -f Green
-    if($Reload){ reload }
+    if($Reload){ reload() }
 }
 
 function reload{
