@@ -2,7 +2,7 @@ function sync{
     $Start = Get-Location
     $PowerShellConfig = "c:$($env:HOMEPATH)\Documents\WindowsPowershell"
     $ConsoleConfig = "c:$($env:HOMEPATH)\Application Data\Console"
-    $Reload = $False
+    $Reload = $True
 
     $LookAt = (
             ("Console2 Configuration", $ConsoleConfig),
