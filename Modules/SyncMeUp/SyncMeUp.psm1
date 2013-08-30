@@ -15,7 +15,7 @@ function sync{
     $Start = Get-Location
     $PowerShellConfig = "c:$($env:HOMEPATH)\Documents\WindowsPowershell"
     $ConsoleConfig = "c:$($env:HOMEPATH)\Application Data\Console"
-    $Reload = $True
+    $Reload = $False
 
     $LookAt = (
             ("Console2 Configuration", $ConsoleConfig),
@@ -47,7 +47,6 @@ function sync{
     }
 
     Set-Location $Start
-
     Write-Host "All Synced!" -f Green
     if ($Reload) {reload}
 }
