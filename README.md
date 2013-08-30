@@ -3,4 +3,4 @@ ps-config
 
 Powershell Config
 
-My configuration!
+My configuration! It's pretty cool!
