@@ -19,6 +19,8 @@ function sync{
             Write-Host "Syncing $($_[0])" -f Red
             git add -u
             git add .
+            Write-Host "Diff Message: " -f Blue
+            git diff 
             git commit -m (Read-Host -Prompt "Commit Message")
             git pull
             git push

@@ -3,6 +3,9 @@ Import-Module PSUrl
 Import-Module Aliases
 Import-Module SyncMeUp
 
+# Makes git diff work
+$env:TERM = "msys"
+
 Set-Alias subl "C:\Program Files\Sublime Text 3\sublime_text.exe"
 
 function CDScripts {set-location C:\Users\chbentiv\Documents\Scripts}
