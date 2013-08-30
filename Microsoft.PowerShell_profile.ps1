@@ -2,6 +2,7 @@ Import-Module PsGet
 Import-Module PSUrl
 Import-Module Aliases
 Import-Module SyncMeUp
+Import-Module Work -ErrorAction SilentlyContinue
 
 if(Test-Path ~\.last) {
     (Get-Content ~\.last) | set-location
@@ -9,22 +10,10 @@ if(Test-Path ~\.last) {
 }
 
 
-
 # Makes git diff work
 $env:TERM = "msys"
 
 Set-Alias subl "C:\Program Files\Sublime Text 3\sublime_text.exe"
-
-function CDScripts {set-location C:\Users\chbentiv\Documents\Scripts}
-Set-Alias s CDScripts
-
-function CDNovaScripts {set-location \\novafs01\nova\Users\chbentiv\Scripts}
-Set-Alias n CDNovaScripts
-
-function CDProdStudFiles {set-location "C:\Users\chbentiv\Documents\Product Studio Files"}
-Set-Alias p CDProdStudFiles
-
-function temp {set-location "C:\Users\chbentiv\Desktop\temp"}
 
 
 function prompt { 
