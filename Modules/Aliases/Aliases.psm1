@@ -21,3 +21,5 @@ function view {
     & "C:\Program Files\Sublime Text 3\sublime_text.exe" $file
     start-job -InputObject $file -ScriptBlock{start-sleep 1; rm $input} | out-null
 }
+
+function ~ { cd ~ }
