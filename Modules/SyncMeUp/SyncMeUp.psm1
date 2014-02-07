@@ -3,7 +3,7 @@ function reload{
     $process = get-process | ?{$_.ID -eq $pid}
     if($process.MainWindowTitle.Equals("")){
         # Console
-        start "C:\Program Files (x86)\Console2\Console.exe"
+        start "C:\Program Files\ConEmu\ConEmu64.exe"
     } else {
         # Powershell 
         start "powershell.exe"
@@ -15,11 +15,10 @@ function reload{
 function sync{
     $Start = Get-Location
     $PowerShellConfig = "c:$($env:HOMEPATH)\Documents\WindowsPowershell"
-    $ConsoleConfig = "c:$($env:HOMEPATH)\Application Data\Console"
+    
     $Reload = $False
 
     $LookAt = (
-            ("Console2 Configuration", $ConsoleConfig),
             ("Powershell Configuration", $PowerShellConfig)
         )
 

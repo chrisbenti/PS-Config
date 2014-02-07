@@ -1,6 +1,7 @@
 Import-Module PsGet
 Import-Module PSUrl
 Import-Module Aliases
+Import-Module PowerTab
 Import-Module SyncMeUp
 Import-Module Work -ErrorAction SilentlyContinue
 
