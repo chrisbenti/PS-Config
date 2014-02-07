@@ -16,3 +16,5 @@ function Get-Admin {
 function which($name){
 	Get-Command $name | Select-Object -ExpandProperty Definition
 }
+
+function ~ { cd ~ }
