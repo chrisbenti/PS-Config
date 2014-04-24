@@ -17,6 +17,19 @@ function gst {git status}
 
 function Colors {
     [ConsoleColor].DeclaredMembers | Select Name | Where {$_.Name -ne "value__" } |% {Write-Host $_.Name -f $_.Name}
+
+    $colors = @{}
+    $colors["blue"] = ([ConsoleColor]::Blue, [ConsoleColor]::DarkBlue)
+    $colors["green"] = ([ConsoleColor]::Green, [ConsoleColor]::DarkGreen)
+    $colors["cyan"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkCyan)
+    $colors["red"] = ([ConsoleColor]::Red, [ConsoleColor]::DarkRed)
+    $colors["magenta"] = ([ConsoleColor]::Magenta, [ConsoleColor]::DarkMagenta)
+    $colors["yellow"] = ([ConsoleColor]::Yellow, [ConsoleColor]::DarkYellow)
+    $colors["gray"] = ([ConsoleColor]::Gray, [ConsoleColor]::DarkGray)
+
+    $colors.Keys | % {
+        Write-Host  " $_ " -f $colors[$_][0] -b $colors[$_][1]
+    }
 }
 
 function which($name){

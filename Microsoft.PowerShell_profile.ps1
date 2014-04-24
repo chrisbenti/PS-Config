@@ -5,6 +5,23 @@ Import-Module PowerTab
 Import-Module SyncMeUp
 Import-Module Work -ErrorAction SilentlyContinue
 
+# Constants
+$SPACER = [char]11136
+
+$colors = @{}
+$colors["blue"] = ([ConsoleColor]::Blue, [ConsoleColor]::DarkBlue)
+$colors["green"] = ([ConsoleColor]::Green, [ConsoleColor]::DarkGreen)
+$colors["cyan"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkCyan)
+$colors["red"] = ([ConsoleColor]::Red, [ConsoleColor]::DarkRed)
+$colors["magenta"] = ([ConsoleColor]::Magenta, [ConsoleColor]::DarkMagenta)
+$colors["yellow"] = ([ConsoleColor]::Yellow, [ConsoleColor]::DarkYellow)
+$colors["gray"] = ([ConsoleColor]::Gray, [ConsoleColor]::DarkGray)
+
+
+
+
+
+
 if(Test-Path ~\.last) {
     (Get-Content ~\.last) | set-location
     rm ~\.last
@@ -24,18 +41,41 @@ function prompt {
     $drive = (get-drive (pwd).Path)
 
     $color = [ConsoleColor]::Cyan
+    $bgcolor = [ConsoleColor]::DarkCyan
     switch ($drive){
-        "\\"    {$color = [ConsoleColor]::Green}   
+        "\\"    {
+            $color = [ConsoleColor]::Green
+            $bgcolor = [ConsoleColor]::DarkGreen
+        }  
     }
 
-    write-host $drive -n -f $color
-    write-host (shorten-path (pwd).Path) -n -f $color
+    write-host " " -n -b $bgcolor
+    write-host $drive -n -f $color -b $bgcolor
+    write-host (shorten-path (pwd).Path) -n -f $color -b $bgcolor
+    write-host " " -n -b $bgcolor
 
-    $LASTEXITCODE = $realLASTEXITCODE
+    if(Vanilla-Window ){
+        write-host " > " -n
+    } else {
+        write-host -f $bgcolor $SPACER -n
+    }
 
-
-    return " > " 
+    return " " 
 } 
+
+
+
+function Vanilla-Window{
+    (Get-Location).Path > ~\.last
+    $process = get-process | ?{$_.ID -eq $pid}
+    if($process.MainWindowTitle.Equals("")){
+        # Console
+        return $false
+    } else {
+        # Powershell 
+        return $true
+    }
+}
 
 
 # Utility for prompt()
