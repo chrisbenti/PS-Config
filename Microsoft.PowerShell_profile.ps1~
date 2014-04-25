@@ -5,24 +5,22 @@ Import-Module Aliases
 Import-Module PowerTab
 Import-Module SyncMeUp
 Import-Module Work -ErrorAction SilentlyContinue
-Import-Module posh-git
 ############################### Module Imports ###############################
 
 
 
 ################################## Constants #################################
 $FANCY_SPACER = [char]11136
-$GIT_BRANCH = [char]11104
 
 
 $colors = @{}
-$colors["blue"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkBlue)
+$colors["blue"] = ([ConsoleColor]::Blue, [ConsoleColor]::DarkBlue)
 $colors["green"] = ([ConsoleColor]::Green, [ConsoleColor]::DarkGreen)
 $colors["cyan"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkCyan)
 $colors["red"] = ([ConsoleColor]::Red, [ConsoleColor]::DarkRed)
 $colors["magenta"] = ([ConsoleColor]::Magenta, [ConsoleColor]::DarkMagenta)
 $colors["yellow"] = ([ConsoleColor]::Yellow, [ConsoleColor]::DarkYellow)
-$colors["gray"] = ([ConsoleColor]::White, [ConsoleColor]::DarkGray)
+$colors["gray"] = ([ConsoleColor]::Gray, [ConsoleColor]::DarkGray)
 ################################## Constants #################################
 
 
@@ -43,7 +41,9 @@ function Start-Up{
     }
 
     # Makes git diff work
-    $env:TERM = "msys"
+    $env:TERM = "msys"   
+
+
 }
 
 <#
@@ -53,10 +53,7 @@ Generates the prompt before each line in the console
 function Prompt { 
 
     $realLASTEXITCODE = $LASTEXITCODE
-    $gitStatus = Get-GitStatus
-    $gitColor = "green"
-    if($gitStatus -and ($gitStatus.HasIndex -or $gitStatus.HasUntracked)) { $gitColor = "yellow"}
-    if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "blue" }
+
     $drive = (get-drive (pwd).Path)
 
     $color = "gray"
@@ -74,26 +71,13 @@ function Prompt {
     if(Vanilla-Window){
         Write-Host ">" -n
     } else {
-        if($gitStatus){
-            Write-Host $FANCY_SPACER -f $colors[$color][1] -b $colors[$gitColor][1] -n
-        } else {
-            Write-Colors $color $FANCY_SPACER -invert -noB
-        }
+        Write-Colors $color $FANCY_SPACER -invert -noB
     }
     
-    if($gitStatus) {
-        Write-Colors $gitColor " $GIT_BRANCH $($gitStatus.branch) "
-        Write-Colors $gitColor $FANCY_SPACER -invert -noB
-    }
-
-
-
     return " " 
 } 
 ################################# Main Methods ###############################
-
-
-
+################################ Helper Methods ##############################
 
 
 ################################ Helper Methods ##############################
@@ -171,17 +155,6 @@ function shorten-path([string] $path) {
     # make path shorter like tabs in Vim, 
     # handle paths starting with \\ and . correctly 
     return ($loc -replace '\\(\.?)([^\\]{3})[^\\]*(?=\\)','\$1$2') 
-}
-
-function Colors {
-    Write-Host "INDIVIDUAL COLORS"
-    [ConsoleColor].DeclaredMembers | Select Name | Where {$_.Name -ne "value__" } |% {Write-Host $_.Name -f $_.Name}
-
-    Write-Host
-    Write-Host "NAMED PAIRS"
-    $colors.Keys | % {
-        Write-Host  " $_ " -f $colors[$_][0] -b $colors[$_][1]
-    }
 }
 ################################ Helper Methods ##############################
 

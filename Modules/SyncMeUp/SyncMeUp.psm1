@@ -12,6 +12,10 @@ function reload{
 
 }
 
+function refresh{
+    . $PROFILE
+}
+
 function sync{
     $Start = Get-Location
     $PowerShellConfig = "c:$($env:HOMEPATH)\Documents\WindowsPowershell"
