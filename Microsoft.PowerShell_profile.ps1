@@ -13,7 +13,7 @@ Import-Module posh-git
 ################################## Constants #################################
 $FANCY_SPACER = [char]11136
 $GIT_BRANCH = [char]11104
-
+$FANCY_X = [char]10008
 
 $colors = @{}
 $colors["blue"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkBlue)
@@ -55,10 +55,11 @@ function Prompt {
     $realLASTEXITCODE = $LASTEXITCODE
     $gitStatus = Get-GitStatus
     $gitColor = "green"
-    if($gitStatus -and ($gitStatus.HasIndex -or $gitStatus.HasUntracked)) { $gitColor = "yellow"}
-    if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "blue" }
-    $drive = (get-drive (pwd).Path)
+    if($gitStatus -and ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking)) { $gitColor = "yellow"}
+    if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "blue" }
+    
 
+    $drive = (get-drive (pwd).Path)
     $color = "gray"
     switch ($drive){
         "\\" { $color = "green" }
