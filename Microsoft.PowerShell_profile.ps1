@@ -56,15 +56,15 @@ function Prompt {
     $gitStatus = Get-GitStatus
     $gitColor = "green"
     if($gitStatus -and ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking)) { $gitColor = "yellow"}
-    if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "blue" }
+    if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "cyan" }
     
 
     $drive = (get-drive (pwd).Path)
     $color = "gray"
     switch ($drive){
         "\\" { $color = "green" }
-        "C:" { $color = "cyan" }
-        "~"  { $color = "cyan"}
+        "C:" { $color = "blue" }
+        "~"  { $color = "blue"}
     }
 
     if(-not (Vanilla-Window)){ Write-Colors $color " "}
