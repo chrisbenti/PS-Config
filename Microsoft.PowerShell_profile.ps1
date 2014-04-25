@@ -10,7 +10,8 @@ Import-Module Work -ErrorAction SilentlyContinue
 
 
 ################################## Constants #################################
-$SPACER = [char]11136
+$FANCY_SPACER = [char]11136
+
 
 $colors = @{}
 $colors["blue"] = ([ConsoleColor]::Blue, [ConsoleColor]::DarkBlue)
@@ -53,26 +54,21 @@ function Prompt {
 
     $drive = (get-drive (pwd).Path)
 
-    $color = [ConsoleColor]::Cyan
-    $bgcolor = [ConsoleColor]::DarkCyan
+    $color = "cyan"
     switch ($drive){
-        "\\"    {
-            $color = [ConsoleColor]::Green
-            $bgcolor = [ConsoleColor]::DarkGreen
-        }  
+        "\\" { $color = "green" }
     }
 
-    write-host " " -n -b $bgcolor
-    write-host $drive -n -f $color -b $bgcolor
-    write-host (shorten-path (pwd).Path) -n -f $color -b $bgcolor
-    write-host " " -n -b $bgcolor
+    Write-Colors $color " $drive"
+    Write-Colors $color (shorten-path (pwd).Path)
+    Write-Colors $color " "
 
-    if(Vanilla-Window ){
-        write-host " > " -n
+    if(Vanilla-Window){
+        Write-Host " > " -n
     } else {
-        write-host -f $bgcolor $SPACER -n
+        Write-Colors $color $FANCY_SPACER -invert -noB
     }
-
+    
     return " " 
 } 
 ################################# Main Methods ###############################
@@ -84,18 +80,26 @@ function Write-Colors{
     param(
         [Parameter(Mandatory=$True)][string]$color,
         [Parameter(Mandatory=$True)][string]$message,
-        [switch]$newLine
+        [switch]$newLine,
+        [switch]$invert,
+        [switch]$noBackground
     )
 
     if(-not $colors[$color]){
         throw "Not a valid color: $color"
     }
 
-    $colorBackground = $True
-    if($colorBackground){
-        Write-Host $message -ForegroundColor $colors[$color][0] -BackgroundColor $colors[$color][1] -NoNewline
+    $FG = 0
+    $BG = 1
+    if($invert){
+        $FG = 1
+        $BG = 0
+    }
+
+    if(-not ($noBackground)){
+        Write-Host $message -ForegroundColor $colors[$color][$FG] -BackgroundColor $colors[$color][$BG] -NoNewline
     } else {
-        Write-Host $message -ForegroundColor $colors[$color][0] -NoNewline
+        Write-Host $message -ForegroundColor $colors[$color][$FG] -NoNewline
     }
 
     if($newLine) { Write-Host "" }
