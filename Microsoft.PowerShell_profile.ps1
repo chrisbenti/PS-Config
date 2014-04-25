@@ -61,12 +61,13 @@ function Prompt {
         "~"  { $color = "cyan"}
     }
 
-    Write-Colors $color " $drive"
+    if(-not (Vanilla-Window)){ Write-Colors $color " "}
+    Write-Colors $color "$drive"
     Write-Colors $color (shorten-path (pwd).Path)
     Write-Colors $color " "
 
     if(Vanilla-Window){
-        Write-Host " > " -n
+        Write-Host ">" -n
     } else {
         Write-Colors $color $FANCY_SPACER -invert -noB
     }
@@ -90,6 +91,8 @@ function Write-Colors{
     if(-not $colors[$color]){
         throw "Not a valid color: $color"
     }
+
+    $noBackground = ($noBackground -or (Vanilla-Window))
 
     $FG = 0
     $BG = 1
