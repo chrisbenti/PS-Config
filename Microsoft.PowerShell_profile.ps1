@@ -1,11 +1,15 @@
+############################### Module Imports ###############################
 Import-Module PsGet
 Import-Module PSUrl
 Import-Module Aliases
 Import-Module PowerTab
 Import-Module SyncMeUp
 Import-Module Work -ErrorAction SilentlyContinue
+############################### Module Imports ###############################
 
-# Constants
+
+
+################################## Constants #################################
 $SPACER = [char]11136
 
 $colors = @{}
@@ -16,25 +20,34 @@ $colors["red"] = ([ConsoleColor]::Red, [ConsoleColor]::DarkRed)
 $colors["magenta"] = ([ConsoleColor]::Magenta, [ConsoleColor]::DarkMagenta)
 $colors["yellow"] = ([ConsoleColor]::Yellow, [ConsoleColor]::DarkYellow)
 $colors["gray"] = ([ConsoleColor]::Gray, [ConsoleColor]::DarkGray)
+################################## Constants #################################
 
 
 
 
+################################# Main Methods ###############################
+<#
+.SYNOPSIS
+Method called at each launch of Powershell
 
+.DESCRIPTION
+Sets up things needed in each console session, asside from prompt
+#>
+function Start-Up{
+    if(Test-Path ~\.last) {
+        (Get-Content ~\.last) | set-location
+       rm ~\.last
+    }
 
-if(Test-Path ~\.last) {
-    (Get-Content ~\.last) | set-location
-    rm ~\.last
+    # Makes git diff work
+    $env:TERM = "msys"   
 }
 
-
-# Makes git diff work
-$env:TERM = "msys"
-
-Set-Alias subl "C:\Program Files\Sublime Text 3\sublime_text.exe"
-
-
-function prompt { 
+<#
+.SYNOPSIS
+Generates the prompt before each line in the console
+#>
+function Prompt { 
 
     $realLASTEXITCODE = $LASTEXITCODE
 
@@ -62,6 +75,31 @@ function prompt {
 
     return " " 
 } 
+################################# Main Methods ###############################
+################################ Helper Methods ##############################
+
+
+################################ Helper Methods ##############################
+function Write-Colors{
+    param(
+        [Parameter(Mandatory=$True)][string]$color,
+        [Parameter(Mandatory=$True)][string]$message,
+        [switch]$newLine
+    )
+
+    if(-not $colors[$color]){
+        throw "Not a valid color: $color"
+    }
+
+    $colorBackground = $True
+    if($colorBackground){
+        Write-Host $message -ForegroundColor $colors[$color][0] -BackgroundColor $colors[$color][1] -NoNewline
+    } else {
+        Write-Host $message -ForegroundColor $colors[$color][0] -NoNewline
+    }
+
+    if($newLine) { Write-Host "" }
+}
 
 
 
@@ -106,3 +144,7 @@ function shorten-path([string] $path) {
     # handle paths starting with \\ and . correctly 
     return ($loc -replace '\\(\.?)([^\\]{3})[^\\]*(?=\\)','\$1$2') 
 }
+################################ Helper Methods ##############################
+
+
+Start-Up # Executes the Start-Up function, better encapsulation

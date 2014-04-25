@@ -3,7 +3,7 @@ function reload{
     $process = get-process | ?{$_.ID -eq $pid}
     if($process.MainWindowTitle.Equals("")){
         # Console
-        start "C:\Program Files\ConEmu\ConEmu64.exe"
+        start "C:\Program Files\ConEmu\ConEmu64.exe" "-LoadCfgFile $($env:USERPROFILE)\Documents\ConEmu\ConEmu.xml"
     } else {
         # Powershell 
         start "powershell.exe"
