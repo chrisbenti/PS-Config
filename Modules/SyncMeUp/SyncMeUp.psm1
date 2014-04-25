@@ -8,7 +8,7 @@ function reload{
         # Powershell 
         start "powershell.exe"
     }
-    $process | kill
+    $process | kill -Force
 
 }
 
