@@ -22,3 +22,15 @@ function which($name){
 }
 
 function ~ { cd ~ }
+
+function Get-ColorPairs { 
+    $colors = [ConsoleColor].DeclaredMembers | Where {$_.Name -ne "value__" }
+
+    $colors | % {
+        $a = $_.Name
+        $colors | % {
+            $b = $_.Name
+            Write-Host "FG: $a | BG: $b" -f $a -b $b
+        }
+    }
+}
