@@ -54,9 +54,11 @@ function Prompt {
 
     $drive = (get-drive (pwd).Path)
 
-    $color = "cyan"
+    $color = "gray"
     switch ($drive){
         "\\" { $color = "green" }
+        "C:" { $color = "cyan" }
+        "~"  { $color = "cyan"}
     }
 
     Write-Colors $color " $drive"
@@ -79,7 +81,7 @@ function Prompt {
 function Write-Colors{
     param(
         [Parameter(Mandatory=$True)][string]$color,
-        [Parameter(Mandatory=$True)][string]$message,
+        [string]$message,
         [switch]$newLine,
         [switch]$invert,
         [switch]$noBackground
@@ -95,6 +97,7 @@ function Write-Colors{
         $FG = 1
         $BG = 0
     }
+
 
     if(-not ($noBackground)){
         Write-Host $message -ForegroundColor $colors[$color][$FG] -BackgroundColor $colors[$color][$BG] -NoNewline
