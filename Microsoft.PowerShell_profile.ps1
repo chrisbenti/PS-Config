@@ -73,7 +73,7 @@ function Prompt {
     Write-Colors $color " "
 
     if(Vanilla-Window){
-        Write-Host ">" -n
+        if(-not $gitStatus) { Write-Host ">" -n }
     } else {
         if($gitStatus){
             Write-Host $FANCY_SPACER -f $colors[$color][1] -b $colors[$gitColor][1] -n
@@ -83,8 +83,14 @@ function Prompt {
     }
     
     if($gitStatus) {
-        Write-Colors $gitColor " $GIT_BRANCH $($gitStatus.branch) "
-        Write-Colors $gitColor $FANCY_SPACER -invert -noB
+        if(Vanilla-Window){
+            Write-Colors $gitColor "($($gitStatus.branch)) "
+            Write-Host ">" -n
+        } else {
+            Write-Colors $gitColor " $GIT_BRANCH $($gitStatus.branch) "
+            Write-Colors $gitColor $FANCY_SPACER -invert -noB    
+        }
+        
     }
 
 
