@@ -1,4 +1,6 @@
+##############################################################################
 ############################### Module Imports ###############################
+##############################################################################
 Import-Module PsGet
 Import-Module PSUrl
 Import-Module Aliases
@@ -6,14 +8,23 @@ Import-Module PowerTab
 Import-Module SyncMeUp
 Import-Module Work -ErrorAction SilentlyContinue
 Import-Module posh-git
+##############################################################################
 ############################### Module Imports ###############################
+##############################################################################
 
 
 
+
+
+##############################################################################
 ################################## Constants #################################
+##############################################################################
 $FANCY_SPACER = [char]11136
 $GIT_BRANCH = [char]11104
 $FANCY_X = [char]10008
+
+$DRIVE_DEFAULT_COLOR = "gray"
+$GIT_COLOR_DEFAULT = "green"
 
 $colors = @{}
 $colors["blue"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkBlue)
@@ -23,12 +34,17 @@ $colors["red"] = ([ConsoleColor]::Red, [ConsoleColor]::DarkRed)
 $colors["magenta"] = ([ConsoleColor]::Magenta, [ConsoleColor]::DarkMagenta)
 $colors["yellow"] = ([ConsoleColor]::Yellow, [ConsoleColor]::DarkYellow)
 $colors["gray"] = ([ConsoleColor]::White, [ConsoleColor]::DarkGray)
+##############################################################################
 ################################## Constants #################################
+##############################################################################
 
 
 
 
+
+##############################################################################
 ################################# Main Methods ###############################
+##############################################################################
 <#
 .SYNOPSIS
 Method called at each launch of Powershell
@@ -46,64 +62,69 @@ function Start-Up{
     $env:TERM = "msys"
 }
 
+
 <#
 .SYNOPSIS
 Generates the prompt before each line in the console
 #>
 function Prompt { 
-
-    $realLASTEXITCODE = $LASTEXITCODE
+    $drive = (Get-Drive (pwd).Path)
     $gitStatus = Get-GitStatus
-    $gitColor = "green"
+
+    $driveColor = $DRIVE_DEFAULT_COLOR
+    $gitColor = $GIT_COLOR_DEFAULT
+
+    # Determine Colors
     if($gitStatus -and ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking)) { $gitColor = "yellow"}
     if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "cyan" }
     
-
-    $drive = (Get-Drive (pwd).Path)
-    $color = "gray"
     switch ($drive){
-        "\\" { $color = "green" }
-        "C:" { $color = "blue" }
-        "~"  { $color = "blue"}
+        "\\" { $driveColor = "magenta" }
+        "C:" { $driveColor = "blue" }
+        "~"  { $driveColor = "blue"}
     }
 
-    if(-not (Vanilla-Window)){ Write-Colors $color " "}
-    Write-Colors $color "$drive"
-    Write-Colors $color (Shorten-Path (pwd).Path)
-    Write-Colors $color " "
+    $lastColor = $driveColor
 
-    if(Vanilla-Window){
-        if(-not $gitStatus) { Write-Host ">" -n }
-    } else {
-        if($gitStatus){
-            Write-Host $FANCY_SPACER -f $colors[$color][1] -b $colors[$gitColor][1] -n
-        } else {
-            Write-Colors $color $FANCY_SPACER -invert -noB
-        }
-    }
-    
-    if($gitStatus) {
+    # PowerLine starts with a space
+    if(-not (Vanilla-Window)){ Write-Colors $driveColor " "}
+
+    # Writes the drive portion
+    Write-Colors $driveColor "$drive"
+    Write-Colors $driveColor (Shorten-Path (pwd).Path)
+    Write-Colors $driveColor " "
+
+    # Writes the git status
+    if($gitStatus){
         if(Vanilla-Window){
             Write-Colors $gitColor "($($gitStatus.branch)) "
-            Write-Host ">" -n
         } else {
+            Write-Host $FANCY_SPACER -f $colors[$driveColor][1] -b $colors[$gitColor][1] -n
             Write-Colors $gitColor " $GIT_BRANCH $($gitStatus.branch) "
-            Write-Colors $gitColor $FANCY_SPACER -invert -noB    
+            $lastColor = $gitColor      
         }
-        
     }
 
-
+    # Writes the postfix to the prompt
+    if(Vanilla-Window) { 
+        Write-Host ">" -n 
+    } else {
+        Write-Colors $lastColor $FANCY_SPACER -invert -noB 
+    }
 
     return " " 
 } 
+##############################################################################
 ################################# Main Methods ###############################
+##############################################################################
 
 
 
 
 
+##############################################################################
 ################################ Helper Methods ##############################
+##############################################################################
 function Write-Colors{
     param(
         [Parameter(Mandatory=$True)][string]$color,
@@ -191,7 +212,11 @@ function Colors {
         Write-Host  " $_ " -f $colors[$_][0] -b $colors[$_][1]
     }
 }
+##############################################################################
 ################################ Helper Methods ##############################
+##############################################################################
+
+
 
 
 

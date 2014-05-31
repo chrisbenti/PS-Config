@@ -37,7 +37,7 @@ function Get-ColorPairs {
         $a = $_.Name
         $bg | % {
             $b = $_.Name
-            Write-Host "FG: $a | BG: $b" -f $a -b $b
+            Write-Host "  FG: $a | BG: $b  " -f $a -b $b
         }
     }
 }
