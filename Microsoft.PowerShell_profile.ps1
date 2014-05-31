@@ -59,7 +59,7 @@ function Prompt {
     if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "cyan" }
     
 
-    $drive = (get-drive (pwd).Path)
+    $drive = (Get-Drive (pwd).Path)
     $color = "gray"
     switch ($drive){
         "\\" { $color = "green" }
@@ -69,7 +69,7 @@ function Prompt {
 
     if(-not (Vanilla-Window)){ Write-Colors $color " "}
     Write-Colors $color "$drive"
-    Write-Colors $color (shorten-path (pwd).Path)
+    Write-Colors $color (Shorten-Path (pwd).Path)
     Write-Colors $color " "
 
     if(Vanilla-Window){
@@ -151,8 +151,8 @@ function Vanilla-Window{
 }
 
 
-# Utility for prompt()
-function get-drive( [string] $path ) {
+
+function Get-Drive( [string] $path ) {
     if( $path.StartsWith( $HOME ) ) {
         return "~"
     } elseif( $path.StartsWith( "Microsoft.PowerShell.Core" ) ){
@@ -163,7 +163,7 @@ function get-drive( [string] $path ) {
 }
 
 
-function shorten-path([string] $path) { 
+function Shorten-Path([string] $path) { 
     $loc = $path.Replace($HOME, '~') 
 
 
@@ -171,7 +171,7 @@ function shorten-path([string] $path) {
     $loc = $loc -replace '^[^:]+::', '' 
 
 
-    $drive = get-drive (pwd).Path
+    $drive = Get-Drive (pwd).Path
     $loc = $loc.TrimStart( $drive )
 
 
@@ -179,6 +179,7 @@ function shorten-path([string] $path) {
     # handle paths starting with \\ and . correctly 
     return ($loc -replace '\\(\.?)([^\\]{3})[^\\]*(?=\\)','\$1$2') 
 }
+
 
 function Colors {
     Write-Host "INDIVIDUAL COLORS"
@@ -191,6 +192,7 @@ function Colors {
     }
 }
 ################################ Helper Methods ##############################
+
 
 
 Start-Up # Executes the Start-Up function, better encapsulation
