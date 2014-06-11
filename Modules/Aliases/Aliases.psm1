@@ -18,6 +18,8 @@ function cec {set-location "c:$($env:HOMEPATH)\Documents\ConEmu"}
 
 function gst {git status}
 
+function cl {chocolatey version all -lo} 
+
 function which($name){
 	Get-Command $name | Select-Object -ExpandProperty Definition
 }
