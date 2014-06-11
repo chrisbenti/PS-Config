@@ -14,6 +14,7 @@ function sudo
 function .. {cd ..}
 
 function psc {set-location "c:$($env:HOMEPATH)\Documents\WindowsPowershell"}
+function cec {set-location "c:$($env:HOMEPATH)\Documents\ConEmu"}
 
 function gst {git status}
 
