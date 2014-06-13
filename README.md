@@ -6,7 +6,7 @@
 ## Installation ##
 One Liner (run this in powershell as the current user context):
 ```
-cd "$env:USERPROFILE\Documents"; git clone https://github.com/chrisbenti/ps-config.git WindowsPowerShell; cd WindowsPowerShell; git submodule init; git submodule update
+pushd "$env:USERPROFILE\Documents"; git clone https://github.com/chrisbenti/ps-config.git WindowsPowerShell; cd WindowsPowerShell; git submodule init; git submodule update; . $PROFILE; popd
 ```
 
 You will also need ConEmu with one of the patched fonts
