@@ -160,13 +160,11 @@ function Write-Colors{
 
 
 function Vanilla-Window{
-    (Get-Location).Path > ~\.last
-    $process = get-process | ?{$_.ID -eq $pid}
-    if($process.MainWindowTitle.Equals("")){
+    if($env:PROMPT -or $env:ConEmuANSI){
         # Console
         return $false
     } else {
-        # Powershell 
+        # Powershell
         return $true
     }
 }
