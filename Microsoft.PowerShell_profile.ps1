@@ -7,7 +7,9 @@ Import-Module Aliases
 Import-Module PowerTab
 Import-Module SyncMeUp
 Import-Module Work -ErrorAction SilentlyContinue
-Import-Module posh-git
+Import-Module posh-git -ErrorAction SilentlyContinue
+Import-Module posh-hg -ErrorAction SilentlyContinue
+Import-Module posh-svn -ErrorAction SilentlyContinue
 ##############################################################################
 ############################### Module Imports ###############################
 ##############################################################################
@@ -60,8 +62,13 @@ function Start-Up{
 
     # Makes git diff work
     $env:TERM = "msys"
+    
+    Try {
+        Start-SshAgent -Quiet
+    } Catch {} #Don't complain if the ssh agent isn't there
 }
 
+$driveColor = $DRIVE_DEFAULT_COLOR
 
 <#
 .SYNOPSIS
@@ -69,14 +76,6 @@ Generates the prompt before each line in the console
 #>
 function Prompt { 
     $drive = (Get-Drive (pwd).Path)
-    $gitStatus = Get-GitStatus
-
-    $driveColor = $DRIVE_DEFAULT_COLOR
-    $gitColor = $GIT_COLOR_DEFAULT
-
-    # Determine Colors
-    if($gitStatus -and ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking)) { $gitColor = "yellow"}
-    if($gitStatus -and -not ($gitStatus.HasIndex -or $gitStatus.HasUntracked -or $gitStatus.HasWorking) -and ($gitStatus.AheadBy -gt 0)){ $gitColor = "cyan" }
     
     switch ($drive){
         "\\" { $driveColor = "magenta" }
@@ -94,14 +93,25 @@ function Prompt {
     Write-Colors $driveColor (Shorten-Path (pwd).Path)
     Write-Colors $driveColor " "
 
-    # Writes the git status
-    if($gitStatus){
-        if(Vanilla-Window){
-            Write-Colors $gitColor "($($gitStatus.branch)) "
-        } else {
-            Write-Host $FANCY_SPACER -f $colors[$driveColor][1] -b $colors[$gitColor][1] -n
-            Write-Colors $gitColor " $GIT_BRANCH $($gitStatus.branch) "
-            $lastColor = $gitColor      
+    if(Vanilla-Window){ #use the builtin posh-output
+        Write-VcsStatus
+    } else { #get ~fancy~
+        $status = $false;
+        Try {
+            $status = Get-GitStatus;
+        } Catch {} #Yes.
+        if (!$status) {
+            Try {
+                $status = Get-HgStatus;
+            } Catch {}
+        }
+        if (!$status) {
+            Try {
+                $status = Get-SvnStatus;
+            } Catch {}
+        }
+        if ($status) {
+            $lastColor = Write-Fancy-Vcs-Branches($status);
         }
     }
 
@@ -121,10 +131,26 @@ function Prompt {
 
 
 
-
 ##############################################################################
 ################################ Helper Methods ##############################
 ##############################################################################
+function Write-Fancy-Vcs-Branches($status) {
+    if ($status) {
+        $color = $GIT_COLOR_DEFAULT
+
+        # Determine Colors
+        $localChanges = ($status.HasIndex -or $status.HasUntracked -or $status.HasWorking); #Git flags
+        $localChanges = $localChanges -or (($status.Untracked -gt 0) -or ($status.Added -gt 0) -or ($status.Modified -gt 0) -or ($status.Deleted -gt 0) -or ($status.Renamed -gt 0)); #hg/svn flags
+
+        if($localChanges) { $color = "yellow"}
+        if(-not ($localChanges) -and ($status.AheadBy -gt 0)){ $color = "cyan" } #only affects git     
+        
+        Write-Host $FANCY_SPACER -f $colors[$driveColor][1] -b $colors[$color][1] -n
+        Write-Colors $color " $GIT_BRANCH $($status.Branch) "
+        return $color
+    }
+}
+
 function Write-Colors{
     param(
         [Parameter(Mandatory=$True)][string]$color,
@@ -222,3 +248,4 @@ function Colors {
 
 Start-Up # Executes the Start-Up function, better encapsulation
 Set-Alias subl "C:\Program Files\Sublime Text 3\sublime_text.exe"
+
