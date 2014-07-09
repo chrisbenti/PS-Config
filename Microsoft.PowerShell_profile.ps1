@@ -63,9 +63,9 @@ function Start-Up{
     # Makes git diff work
     $env:TERM = "msys"
     
-    Try {
+    if(Get-Module Posh-Git) {
         Start-SshAgent -Quiet
-    } Catch {} #Don't complain if the ssh agent isn't there
+    }
 }
 
 $driveColor = $DRIVE_DEFAULT_COLOR
@@ -129,9 +129,9 @@ function Get-VCSStatus{
                      "posh-svn"  = "Get-SvnStatus"
                     }
 
-    $vcs_systems.Keys | ForEach {
-        if((Get-Module $_).Count -gt 0){
-            $status = (Invoke-Expression ($vcs_systems[$_]))       
+    $vcs_systems.Keys | ForEach-Object {
+        if((Get-Module -Name $_).Count -gt 0){
+            $status = (Invoke-Expression -Command ($vcs_systems[$_]))       
         }   
     }
     return $status
