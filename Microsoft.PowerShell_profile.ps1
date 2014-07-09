@@ -1,15 +1,15 @@
 ##############################################################################
 ############################### Module Imports ###############################
 ##############################################################################
-Import-Module PsGet
-Import-Module PSUrl
-Import-Module Aliases
-Import-Module PowerTab
-Import-Module SyncMeUp
-Import-Module Work -ErrorAction SilentlyContinue
-Import-Module posh-git -ErrorAction SilentlyContinue
-Import-Module posh-hg -ErrorAction SilentlyContinue
-Import-Module posh-svn -ErrorAction SilentlyContinue
+Import-Module -Name PsGet
+Import-Module -Name PSUrl
+Import-Module -Name Aliases
+Import-Module -Name PowerTab
+Import-Module -Name SyncMeUp
+Import-Module -Name Work -ErrorAction SilentlyContinue
+Import-Module -Name posh-git -ErrorAction SilentlyContinue
+Import-Module -Name posh-hg -ErrorAction SilentlyContinue
+Import-Module -Name posh-svn -ErrorAction SilentlyContinue
 ##############################################################################
 ############################### Module Imports ###############################
 ##############################################################################
@@ -55,9 +55,9 @@ Method called at each launch of Powershell
 Sets up things needed in each console session, asside from prompt
 #>
 function Start-Up{
-    if(Test-Path ~\.last) {
-        (Get-Content ~\.last) | set-location
-       rm ~\.last
+    if(Test-Path -Path ~\.last) {
+        (Get-Content -Path ~\.last) | set-location
+       Remove-Item -Path ~\.last
     }
 
     # Makes git diff work
@@ -75,7 +75,7 @@ $driveColor = $DRIVE_DEFAULT_COLOR
 Generates the prompt before each line in the console
 #>
 function Prompt { 
-    $drive = (Get-Drive (pwd).Path)
+    $drive = (Get-Drive (Get-Location).Path)
     
     switch ($drive){
         "\\" { $driveColor = "magenta" }
@@ -90,7 +90,7 @@ function Prompt {
 
     # Writes the drive portion
     Write-Colors $driveColor "$drive"
-    Write-Colors $driveColor (Shorten-Path (pwd).Path)
+    Write-Colors $driveColor (Shorten-Path (Get-Location).Path)
     Write-Colors $driveColor " "
 
     if(Vanilla-Window){ #use the builtin posh-output
@@ -117,7 +117,7 @@ function Prompt {
 
     # Writes the postfix to the prompt
     if(Vanilla-Window) { 
-        Write-Host ">" -n 
+        Write-Host -Object ">" -n 
     } else {
         Write-Colors $lastColor $FANCY_SPACER -invert -noB 
     }
@@ -145,7 +145,7 @@ function Write-Fancy-Vcs-Branches($status) {
         if($localChanges) { $color = "yellow"}
         if(-not ($localChanges) -and ($status.AheadBy -gt 0)){ $color = "cyan" } #only affects git     
         
-        Write-Host $FANCY_SPACER -f $colors[$driveColor][1] -b $colors[$color][1] -n
+        Write-Host -Object $FANCY_SPACER -ForegroundColor $colors[$driveColor][1] -BackgroundColor $colors[$color][1] -NoNewline
         Write-Colors $color " $GIT_BRANCH $($status.Branch) "
         return $color
     }
@@ -175,12 +175,12 @@ function Write-Colors{
 
 
     if(-not ($noBackground)){
-        Write-Host $message -ForegroundColor $colors[$color][$FG] -BackgroundColor $colors[$color][$BG] -NoNewline
+        Write-Host -Object $message -ForegroundColor $colors[$color][$FG] -BackgroundColor $colors[$color][$BG] -NoNewline
     } else {
-        Write-Host $message -ForegroundColor $colors[$color][$FG] -NoNewline
+        Write-Host -Object $message -ForegroundColor $colors[$color][$FG] -NoNewline
     }
 
-    if($newLine) { Write-Host "" }
+    if($newLine) { Write-Host -Object "" }
 }
 
 
@@ -216,7 +216,7 @@ function Shorten-Path([string] $path) {
     $loc = $loc -replace '^[^:]+::', '' 
 
 
-    $drive = Get-Drive (pwd).Path
+    $drive = Get-Drive (Get-Location).Path
     $loc = $loc.TrimStart( $drive )
 
 
@@ -227,13 +227,19 @@ function Shorten-Path([string] $path) {
 
 
 function Colors {
-    Write-Host "INDIVIDUAL COLORS"
-    [ConsoleColor].DeclaredMembers | Select Name | Where {$_.Name -ne "value__" } |% {Write-Host $_.Name -f $_.Name}
+    Write-Host -Object "INDIVIDUAL COLORS"
+    [ConsoleColor].DeclaredMembers | Select-Object -Property Name `
+        | Where-Object {$_.Name -ne "value__" } `
+        | ForEach-Object {
+            Write-Host -Object $_.Name -ForegroundColor $_.Name
+        }
 
     Write-Host
-    Write-Host "NAMED PAIRS"
-    $colors.Keys | % {
-        Write-Host  " $_ " -f $colors[$_][0] -b $colors[$_][1]
+    Write-Host -Object "NAMED PAIRS"
+    $colors.Keys | ForEach-Object {
+        Write-Host -Object " $_ " `
+            -ForegroundColor $colors[$_][0] `
+            -BackgroundColor $colors[$_][1]
     }
 }
 ##############################################################################
@@ -245,4 +251,4 @@ function Colors {
 
 
 Start-Up # Executes the Start-Up function, better encapsulation
-Set-Alias subl "C:\Program Files\Sublime Text 3\sublime_text.exe"
+Set-Alias -Name subl -Value "C:\Program Files\Sublime Text 3\sublime_text.exe"
