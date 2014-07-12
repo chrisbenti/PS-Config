@@ -213,6 +213,14 @@ function Get-Drive( [string] $path ) {
     }
 }
 
+function Is-Git( $dir ) {
+    return Get-ChildItem -Path $dir.FullName -force .git
+}
+
+function Is-Hg( $dir ) {
+    return Get-ChildItem -Path $dir.FullName -force .hg
+}
+
 
 function Shorten-Path([string] $path) { 
 
@@ -222,7 +230,7 @@ function Shorten-Path([string] $path) {
     while($dir.Parent) {
 
         # Prepend to list
-        if( $result.length -eq 0 ) {
+        if( (Is-Git $dir) -Or (Is-Hg $dir) -Or ($result.length -eq 0) ) {
             $result = ,$dir.Name + $result
         } else {
             $result = ,$dir.Name.Substring(0, $SHORT_FOLDER_NAME_SIZE) + $result
