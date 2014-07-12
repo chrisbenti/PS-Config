@@ -28,6 +28,8 @@ $FANCY_X = [char]10008
 $DRIVE_DEFAULT_COLOR = "gray"
 $GIT_COLOR_DEFAULT = "green"
 
+$SHORT_FOLDER_NAME_SIZE = 3
+
 $colors = @{}
 $colors["blue"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkBlue)
 $colors["green"] = ([ConsoleColor]::Green, [ConsoleColor]::DarkGreen)
@@ -213,20 +215,24 @@ function Get-Drive( [string] $path ) {
 
 
 function Shorten-Path([string] $path) { 
-    $loc = $path.Replace($HOME, '~') 
 
+    $result = @()
+    $dir = Get-Item $path
 
-    # remove prefix for UNC paths 
-    $loc = $loc -replace '^[^:]+::', '' 
+    while($dir.Parent) {
 
+        # Prepend to list
+        if( $result.length -eq 0 ) {
+            $result = ,$dir.Name + $result
+        } else {
+            $result = ,$dir.Name.Substring(0, $SHORT_FOLDER_NAME_SIZE) + $result
+        }
 
-    $drive = Get-Drive (Get-Location).Path
-    $loc = $loc.TrimStart( $drive )
+        $dir = $dir.Parent
 
+    }
 
-    # make path shorter like tabs in Vim, 
-    # handle paths starting with \\ and . correctly 
-    return ($loc -replace '\\(\.?)([^\\]{3})[^\\]*(?=\\)','\$1$2') 
+    return "\" + ($result -join "\")
 }
 
 
