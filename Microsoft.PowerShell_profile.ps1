@@ -81,8 +81,8 @@ function Prompt {
     
     switch ($drive){
         "\\" { $driveColor = "magenta" }
-        "C:" { $driveColor = "blue" }
-        "~"  { $driveColor = "blue"}
+        "C:\" { $driveColor = "blue" }
+        "~\"  { $driveColor = "blue"}
     }
 
     $lastColor = $driveColor
@@ -205,11 +205,11 @@ function Vanilla-Window{
 
 function Get-Drive( [string] $path ) {
     if( $path.StartsWith( $HOME ) ) {
-        return "~"
+        return "~\"
     } elseif( $path.StartsWith( "Microsoft.PowerShell.Core" ) ){
         return "\\"
     } else {
-        return $path.split( "\" )[0]
+        return (Get-Item $path).Root
     }
 }
 
@@ -225,7 +225,6 @@ function Shorten-Path([string] $path) {
 
     while($dir.Parent) {
 
-        # Prepend to list
         if( (Is-VCSRoot $dir) -Or ($result.length -eq 0) ) {
             $result = ,$dir.Name + $result
         } else {
@@ -233,10 +232,9 @@ function Shorten-Path([string] $path) {
         }
 
         $dir = $dir.Parent
-
     }
 
-    return "\" + ($result -join "\")
+    return $result -join "\"
 }
 
 
