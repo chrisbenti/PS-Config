@@ -223,7 +223,7 @@ function Shorten-Path([string] $path) {
     $result = @()
     $dir = Get-Item $path
 
-    while($dir.Parent) {
+    while( ($dir.Parent) -And ($dir.FullName -ne $HOME) ) {
 
         if( (Is-VCSRoot $dir) -Or ($result.length -eq 0) ) {
             $result = ,$dir.Name + $result
