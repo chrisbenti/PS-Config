@@ -80,9 +80,13 @@ function Prompt {
     $drive = (Get-Drive (Get-Location).Path)
     
     switch ($drive){
-        "\\" { $driveColor = "magenta" }
         "C:\" { $driveColor = "blue" }
         "~\"  { $driveColor = "blue"}
+        default { 
+            if($drive.StartsWith("\\")){
+                $driveColor = "magenta"    
+            }
+        }
     }
 
     $lastColor = $driveColor
@@ -207,7 +211,8 @@ function Get-Drive( [string] $path ) {
     if( $path.StartsWith( $HOME ) ) {
         return "~\"
     } elseif( $path.StartsWith( "Microsoft.PowerShell.Core" ) ){
-        return "\\"
+        $parts = $path.Replace("Microsoft.PowerShell.Core\FileSystem::\\","").Split("\")
+        return "\\$($parts[0])\$($parts[1])"
     } else {
         return (Get-Item $path).Root
     }
