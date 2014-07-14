@@ -11,8 +11,8 @@ pushd "$env:USERPROFILE\Documents"; git clone --recursive https://github.com/chr
 
 You will also need ConEmu with one of the patched fonts
 
-## Testing ## 
-Testing is done with the ![Pester](https://github.com/pester/Pester) framework.
+## Testing 
+Testing is done with the [Pester](https://github.com/pester/Pester) framework.
 
 To execute tests, run "test.bat" from your profile root.
 
