@@ -79,14 +79,10 @@ Generates the prompt before each line in the console
 function Prompt { 
     $drive = (Get-Drive (Get-Location).Path)
     
-    switch ($drive){
+    switch -wildcard ($drive){
         "C:\" { $driveColor = "blue" }
         "~\"  { $driveColor = "blue"}
-        default { 
-            if($drive.StartsWith("\\")){
-                $driveColor = "magenta"    
-            }
-        }
+        "\\*" { $driveColor = "magenta" }
     }
 
     $lastColor = $driveColor
