@@ -28,6 +28,8 @@ $FANCY_X = [char]10008
 $DRIVE_DEFAULT_COLOR = "gray"
 $GIT_COLOR_DEFAULT = "green"
 
+$SHORT_FOLDER_NAME_SIZE = 3
+
 $colors = @{}
 $colors["blue"] = ([ConsoleColor]::Cyan, [ConsoleColor]::DarkBlue)
 $colors["green"] = ([ConsoleColor]::Green, [ConsoleColor]::DarkGreen)
@@ -77,10 +79,10 @@ Generates the prompt before each line in the console
 function Prompt { 
     $drive = (Get-Drive (Get-Location).Path)
     
-    switch ($drive){
-        "\\" { $driveColor = "magenta" }
-        "C:" { $driveColor = "blue" }
-        "~"  { $driveColor = "blue"}
+    switch -wildcard ($drive){
+        "C:\" { $driveColor = "blue" }
+        "~\"  { $driveColor = "blue"}
+        "\\*" { $driveColor = "magenta" }
     }
 
     $lastColor = $driveColor
@@ -203,30 +205,37 @@ function Vanilla-Window{
 
 function Get-Drive( [string] $path ) {
     if( $path.StartsWith( $HOME ) ) {
-        return "~"
+        return "~\"
     } elseif( $path.StartsWith( "Microsoft.PowerShell.Core" ) ){
-        return "\\"
+        $parts = $path.Replace("Microsoft.PowerShell.Core\FileSystem::\\","").Split("\")
+        return "\\$($parts[0])\$($parts[1])"
     } else {
-        return $path.split( "\" )[0]
+        return (Get-Item $path).Root
     }
 }
 
+function Is-VCSRoot( $dir ) {
+    return (Get-ChildItem -Path $dir.FullName -force .git) `
+       -Or (Get-ChildItem -Path $dir.FullName -force .hg)
+}
 
 function Shorten-Path([string] $path) { 
-    $loc = $path.Replace($HOME, '~') 
 
+    $result = @()
+    $dir = Get-Item $path
 
-    # remove prefix for UNC paths 
-    $loc = $loc -replace '^[^:]+::', '' 
+    while( ($dir.Parent) -And ($dir.FullName -ne $HOME) ) {
 
+        if( (Is-VCSRoot $dir) -Or ($result.length -eq 0) ) {
+            $result = ,$dir.Name + $result
+        } else {
+            $result = ,$dir.Name.Substring(0, $SHORT_FOLDER_NAME_SIZE) + $result
+        }
 
-    $drive = Get-Drive (Get-Location).Path
-    $loc = $loc.TrimStart( $drive )
+        $dir = $dir.Parent
+    }
 
-
-    # make path shorter like tabs in Vim, 
-    # handle paths starting with \\ and . correctly 
-    return ($loc -replace '\\(\.?)([^\\]{3})[^\\]*(?=\\)','\$1$2') 
+    return $result -join "\"
 }
 
 
