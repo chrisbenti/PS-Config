@@ -1,5 +1,5 @@
 # *ps-config* #
-[![Build status](https://ci.appveyor.com/api/projects/status/n33gjm1c9l34ufw1)](https://ci.appveyor.com/project/weswigham/ps-config)
+[![Build status](https://ci.appveyor.com/api/projects/status/qvo0c6326965hv5m)](https://ci.appveyor.com/project/chrisbenti/ps-config)
 ## Screenshot ##
 ![Picture of my current console look and feel](http://i.imgur.com/YuyiD0M.png)
 
