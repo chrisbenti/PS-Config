@@ -1,6 +1,30 @@
 $ROOT = Split-Path -Parent $MyInvocation.MyCommand.Path
-. "$ROOT\..\Microsoft.PowerShell_profile.ps1"
 
+#Unload posh-hg/svn/git if they exist, and load in our own shims in their place
+Get-Module -Name posh-git | Remove-Module 
+New-Module -Name posh-git  -ScriptBlock {
+    function Get-GitStatus {}
+    function Start-SshAgent {}
+
+    Export-ModuleMember -Function Get-GitStatus
+    Export-ModuleMember -Function Start-SshAgent
+} | Import-Module -Force
+
+Get-Module -Name posh-hg | Remove-Module 
+New-Module -Name posh-hg  -ScriptBlock {
+    function Get-HgStatus {}
+
+    Export-ModuleMember -Function Get-HgStatus
+} | Import-Module -Force
+
+Get-Module -Name posh-svn | Remove-Module 
+New-Module -Name posh-svn  -ScriptBlock {
+    function Get-SvnStatus {}
+
+    Export-ModuleMember -Function Get-SvnStatus
+} | Import-Module -Force
+
+. "$ROOT\..\Microsoft.PowerShell_profile.ps1"
 
 Describe "When in a git repo with posh-git installed" {
     Mock Get-GitStatus { return $true; }
@@ -43,6 +67,9 @@ Describe "When in a git repo with posh-git installed" {
 }
 
 Describe "When in a hg repo with posh-hg installed" {
+    Mock Get-Module {
+        return @{"stuff" = "things"}
+    } -ParameterFilter {$Name -eq "posh-hg"}
     Mock Get-HgStatus { return $true; }
     
     Context "And neither posh-git nor posh-svn are installed" {
@@ -83,6 +110,9 @@ Describe "When in a hg repo with posh-hg installed" {
 }
 
 Describe "When in a svn repo with posh-svn installed" {
+    Mock Get-Module {
+        return @{"stuff" = "things"}
+    } -ParameterFilter {$Name -eq "posh-svn"}
     Mock Get-SvnStatus { return $true; }
     
     Context "And neither posh-git nor posh-hg are installed" {
