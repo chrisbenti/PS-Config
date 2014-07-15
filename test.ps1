@@ -1,3 +1,9 @@
+trap #trap exceptions and force failure
+{
+    write-output $_
+    exit 1
+}
+
 Import-Module Pester
 Set-StrictMode -Version Latest
 Import-Module agent-api -ErrorAction SilentlyContinue
