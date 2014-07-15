@@ -1,6 +1,10 @@
 $ROOT = Split-Path -Parent $MyInvocation.MyCommand.Path
 . "$ROOT\..\Microsoft.PowerShell_profile.ps1"
 
+if ($env:CI) {
+    Mock Get-Home { return "c:/User/" }
+}
+
 Describe "UNC Shares" {
     Context "When navigated to a UNC share" {
         It "Shorten-Path returns all parts after the share name" {
