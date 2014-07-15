@@ -6,6 +6,6 @@ install:
     - ps: $env:PSModulePath += ";c:\projects\ps-config\Modules\"
     
 test_script:
-    - ps: (get-psprovider 'FileSystem').Home = "c:\projects\"
+    - ps: (get-psprovider 'FileSystem').Home = "c:\User\"
     - ps: $PROFILE = "c:\projects\ps-config\Microsoft.PowerShell_profile.ps1"
     - ps: .\test.ps1

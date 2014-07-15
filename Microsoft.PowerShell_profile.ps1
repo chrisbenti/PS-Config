@@ -201,10 +201,13 @@ function Vanilla-Window{
     }
 }
 
-
+function Get-Home 
+{
+    return $HOME
+}
 
 function Get-Drive( [string] $path ) {
-    if( $path.StartsWith( $HOME ) ) {
+    if( $path.StartsWith( Get-Home ) ) {
         return "~\"
     } elseif( $path.StartsWith( "Microsoft.PowerShell.Core" ) ){
         $parts = $path.Replace("Microsoft.PowerShell.Core\FileSystem::\\","").Split("\")
