@@ -1,2 +1,1 @@
-@Powershell -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command ^
-"Import-Module Pester;  Set-StrictMode -Version Latest; Invoke-Pester -EnableExit .\Tests"
+@Powershell -NonInteractive -NoProfile -ExecutionPolicy Bypass -File ".\test.ps1"
