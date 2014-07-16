@@ -4,14 +4,14 @@ $ROOT = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Describe "Version control repositories" {
     Context "whose root directories" {
-        $rootdir = "C:/Test"
+        $rootdir = "C:/Temp/Is-Vcs/Test"
         
         It "Is-VCSRoot returns true at the root of a git repository" {
             rm $rootdir -recurse -force -ErrorAction SilentlyContinue
             $dir = "$rootdir/.git";
             mkdir $dir -force
         
-            Is-VCSRoot $dir | Should be $true
+            Is-VCSRoot (Get-Item $rootdir) | Should be $true
             rm $rootdir -recurse -force -ErrorAction SilentlyContinue
         }
         
@@ -20,7 +20,7 @@ Describe "Version control repositories" {
             $dir = "$rootdir/.hg";
             mkdir $dir -force
         
-            Is-VCSRoot $dir | Should be $true
+            Is-VCSRoot (Get-Item $rootdir) | Should be $true
             rm $rootdir -recurse -force -ErrorAction SilentlyContinue
         }
         
@@ -29,7 +29,7 @@ Describe "Version control repositories" {
             $dir = "$rootdir/.svn";
             mkdir $dir -force
         
-            Is-VCSRoot $dir | Should be $true
+            Is-VCSRoot (Get-Item $rootdir) | Should be $true
             rm $rootdir -recurse -force -ErrorAction SilentlyContinue
         }
         
@@ -37,7 +37,7 @@ Describe "Version control repositories" {
             rm $rootdir -recurse -force -ErrorAction SilentlyContinue
             mkdir $rootdir -force
         
-            Is-VCSRoot $dir | Should not be $true
+            Is-VCSRoot (Get-Item $rootdir) | Should not be $true
             rm $rootdir -recurse -force -ErrorAction SilentlyContinue
         }
     }
