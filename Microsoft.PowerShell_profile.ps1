@@ -125,16 +125,19 @@ function Prompt {
 ##############################################################################
 
 function Get-VCSStatus{
-    $status = $false
+    $status = $null
     $vcs_systems = @{"posh-git"  = "Get-GitStatus"; 
                      "posh-hg"   = "Get-HgStatus";
                      "posh-svn"  = "Get-SvnStatus"
                     }
 
-    $vcs_systems.Keys | ForEach-Object {
-        if((Get-Module -Name $_).Count -gt 0){
-            $status = (Invoke-Expression -Command ($vcs_systems[$_]))       
-        }   
+    foreach ($key in $vcs_systems.Keys) {
+        if((Get-Module -Name $key).Count -gt 0){
+            $status = (Invoke-Expression -Command ($vcs_systems[$key]));
+            if ($status) {
+                return $status
+            }
+        }
     }
     return $status
 }
