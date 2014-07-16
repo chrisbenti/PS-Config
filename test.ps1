@@ -19,7 +19,7 @@ if (Get-Command "Add-AppveyorTest" -ErrorAction SilentlyContinue) {
             $failures++;
         }
         
-        Add-AppveyorTest -Name "[$($test.Describe)] [$($test.Context)] - $($test.Name)" -Outcome $outcome -Duration $test.Time.TotalMilliseconds -ErrorMessage $test.FailureMessage -ErrorStackTrace $test.StackTrace
+        Add-AppveyorTest -Name "<a href='bing.com'>$($test.Name)</a>" -Outcome $outcome -Duration $test.Time.TotalMilliseconds -ErrorMessage $test.FailureMessage -ErrorStackTrace $test.StackTrace
     }
     exit $failures;
 } else {}
