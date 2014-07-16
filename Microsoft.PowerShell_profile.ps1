@@ -223,7 +223,8 @@ function Get-Drive( [string] $path ) {
 
 function Is-VCSRoot( $dir ) {
     return (Get-ChildItem -Path $dir.FullName -force .git) `
-       -Or (Get-ChildItem -Path $dir.FullName -force .hg)
+       -Or (Get-ChildItem -Path $dir.FullName -force .hg) `
+       -Or (Get-ChildItem -Path $dir.FullName -force .svn) `
 }
 
 function Shorten-Path([string] $path) { 
