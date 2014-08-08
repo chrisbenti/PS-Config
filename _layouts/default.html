@@ -1,0 +1,18 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+
+	<title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.name }}</title>
+
+	<link rel="stylesheet" href="{{ site.baseurl }}/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}/style.css">
+	<script src="{{ site.baseurl }}/bootstrap.min.js"></script>
+</head>
+<body>
+
+  {% include banner.html %}
+  <div class="container">
+    {{ content }}
+  </div>
+</body>
+</html>
