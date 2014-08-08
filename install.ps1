@@ -15,5 +15,7 @@ if (-not (("Bypass", "Unrestricted") -contains (Get-ExecutionPolicy))){
     Start-Process -Verb runas -FilePath powershell -ArgumentList "set-executionpolicy bypass"
 }
 
+pushd "$env:USERPROFILE\Documents"; git clone --recursive https://github.com/chrisbenti/ps-config.git WindowsPowerShell; . $PROFILE; popd
+
 
 Write-Host -ForegroundColor Green "Installed and ready to go!"
