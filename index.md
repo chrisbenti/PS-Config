@@ -5,13 +5,14 @@ title: PS-Config | PowerShell Configuration File
 
 
 ## Installation: ##
-One Liner (run this in powershell as the current user context):  
 
-```
-(new-object Net.WebClient).DownloadString("http://chrisbenti.github.io/PS-Config/install.ps1") | iex
-```
+#### Get the profile
+From a non-admin PowerShell console:
 
-You will also need ConEmu with one of the patched fonts
+<div class="highlight center"><pre><code>(new-object Net.WebClient).DownloadString("http://chrisbenti.github.io/PS-Config/install.ps1") | iex</code></pre></div>
+
+#### Getting the full experience
+You will also need [ConEmu](https://code.google.com/p/conemu-maximus5/) with one of the patched fonts  
 
 
 ## Inspiration and Resources ##
