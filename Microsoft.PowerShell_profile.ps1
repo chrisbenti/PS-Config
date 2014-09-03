@@ -132,7 +132,8 @@ function Get-VCSStatus{
                     }
 
     foreach ($key in $vcs_systems.Keys) {
-        if((Get-Module -Name $key).Count -gt 0){
+        $module = Get-Module -Name $key;
+        if($module -and @($module).Count -gt 0){
             $status = (Invoke-Expression -Command ($vcs_systems[$key]));
             if ($status) {
                 return $status
