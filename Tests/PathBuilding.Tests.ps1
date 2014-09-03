@@ -1,12 +1,11 @@
 $ROOT = Split-Path -Parent $MyInvocation.MyCommand.Path
 . "$ROOT\..\Microsoft.PowerShell_profile.ps1"
 
-if ($env:CI) {
-    Mock Get-Home { return "c:/User/" }
-}
-
-
 Describe "Get-Provider" {
+    if ($env:CI) {
+        Mock Get-Home { return "c:/User/" }
+    }
+    
     Context "Determining the provider" {
         It "Should handle the FileSystem" {
             Get-Provider "C:\Windows\System32" | Should Be "FileSystem"
@@ -26,8 +25,11 @@ Describe "Get-Provider" {
     }
 }
 
-
 Describe "UNC Shares" {
+    if ($env:CI) {
+        Mock Get-Home { return "c:/User/" }
+    }
+
     Context "When navigated to a UNC share" {
         It "Get-Drive returns the name of the share" {
             Get-Drive "Microsoft.PowerShell.Core\FileSystem::\\localhost\c$\Windows\System32" | Should be "\\localhost\c$\"
@@ -42,6 +44,10 @@ Describe "UNC Shares" {
 }
 
 Describe "Drive Directories" {
+    if ($env:CI) {
+        Mock Get-Home { return "c:/User/" }
+    }
+    
     Context "When in the C:\Windows\system32 directory" {
         It "Get-Drive returns C:\" {
             Get-Drive "C:\Windows\System32" | Should be "C:\"
@@ -53,6 +59,10 @@ Describe "Drive Directories" {
 }
 
 Describe "PowerShell non-FileSystem Providers" {
+    if ($env:CI) {
+        Mock Get-Home { return "c:/User/" }
+    }
+
     Context "When in the cert provider"{
         It "Get-Drive should return something" {
             Get-Drive "Cert:\CurrentUser\CA" | Should Be "Cert:\"
