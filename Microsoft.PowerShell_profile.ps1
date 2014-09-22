@@ -210,16 +210,34 @@ function Get-Home
     return $HOME;
 }
 
+
+function Get-Provider( [string] $path ){
+    return (Get-Item $path).PSProvider.Name
+}
+
+
+
 function Get-Drive( [string] $path ) {
-    $homedir = Get-Home;
-    if( $path.StartsWith( $homedir ) ) {
-        return "~\"
-    } elseif( $path.StartsWith( "Microsoft.PowerShell.Core" ) ){
-        $parts = $path.Replace("Microsoft.PowerShell.Core\FileSystem::\\","").Split("\")
-        return "\\$($parts[0])\$($parts[1])"
+    $provider = Get-Provider $path
+
+    if($provider -eq "FileSystem"){
+        $homedir = Get-Home;
+        if( $path.StartsWith( $homedir ) ) {
+            return "~\"
+        } elseif( $path.StartsWith( "Microsoft.PowerShell.Core" ) ){
+            $parts = $path.Replace("Microsoft.PowerShell.Core\FileSystem::\\","").Split("\")
+            return "\\$($parts[0])\$($parts[1])\"
+        } else {
+            $root = (Get-Item $path).Root
+            if($root){
+                return $root
+            } else {
+                return $path.Split(":\")[0] + ":\"
+            }
+        }
     } else {
-        return (Get-Item $path).Root
-    }
+        return (Get-Item $path).PSDrive.Name + ":\"
+    } 
 }
 
 function Is-VCSRoot( $dir ) {
@@ -228,23 +246,28 @@ function Is-VCSRoot( $dir ) {
        -Or (Get-ChildItem -Path $dir.FullName -force .svn) `
 }
 
-function Shorten-Path([string] $path) { 
+function Shorten-Path([string] $path) {
+    $provider = Get-Provider $path
 
-    $result = @()
-    $dir = Get-Item $path
+    if($provider -eq "FileSystem"){
+        $result = @()
+        $dir = Get-Item $path
 
-    while( ($dir.Parent) -And ($dir.FullName -ne $HOME) ) {
+        while( ($dir.Parent) -And ($dir.FullName -ne $HOME) ) {
 
-        if( (Is-VCSRoot $dir) -Or ($result.length -eq 0) ) {
-            $result = ,$dir.Name + $result
-        } else {
-            $result = ,$dir.Name.Substring(0, $SHORT_FOLDER_NAME_SIZE) + $result
+            if( (Is-VCSRoot $dir) -Or ($result.length -eq 0) ) {
+                $result = ,$dir.Name + $result
+            } else {
+                $result = ,$dir.Name.Substring(0, $SHORT_FOLDER_NAME_SIZE) + $result
+            }
+
+            $dir = $dir.Parent
         }
-
-        $dir = $dir.Parent
+        return $result -join "\"
+    } else {
+        return $path.Replace((Get-Drive $path), "") 
     }
 
-    return $result -join "\"
 }
 
 
