@@ -1,4 +1,4 @@
-# *ps-config* #
+# [*ps-config*](http://chrisbenti.github.io/PS-Config/) #
 [![Build status](https://ci.appveyor.com/api/projects/status/qvo0c6326965hv5m)](https://ci.appveyor.com/project/chrisbenti/ps-config)
 ## Screenshot ##
 ![Picture of my current console look and feel](http://i.imgur.com/YuyiD0M.png)
